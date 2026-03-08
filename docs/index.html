@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UserGrow — AI Brand Visibility Intelligence</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/TagCloud@2.2.0/dist/TagCloud.min.js"></script>
+</head>
+<body>
+
+<!-- Background gradient handled by body CSS -->
+
+<!-- ====== SEARCH PAGE (Hero) ====== -->
+<div id="searchPage" class="page-section active">
+  <div class="container">
+    <nav>
+      <div class="logo"><span>User</span>Grow</div>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="/graph.html">Knowledge Graph</a>
+        <a href="https://github.com/luofang34/FDHackathon" target="_blank">GitHub</a>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+      <h1>UserGrow</h1>
+      <p class="hero-subtitle">See how AI perceives your brand.<br>Across models. Personas. Languages.</p>
+      
+      <!-- Search Form -->
+      <div class="search-form">
+        <div class="search-row">
+          <input type="text" id="brandInput" placeholder="Search brand or company" required>
+          <button onclick="startAnalysis()" class="analyze-btn">Analyze →</button>
+        </div>
+        <div class="search-meta">
+          <select id="industrySelect">
+            <option value="">Select Industry</option>
+            <optgroup label="Healthcare &amp; Life Sciences">
+              <option value="healthcare">Healthcare / Medical</option>
+              <option value="dental">Dental</option>
+              <option value="pharmacy">Pharmacy</option>
+              <option value="mental_health">Mental Health</option>
+              <option value="veterinary">Veterinary</option>
+              <option value="biotech">Biotechnology</option>
+            </optgroup>
+            <optgroup label="Professional Services">
+              <option value="legal">Legal</option>
+              <option value="accounting">Accounting / Tax</option>
+              <option value="consulting">Consulting</option>
+              <option value="real_estate">Real Estate</option>
+              <option value="insurance">Insurance</option>
+              <option value="hr_staffing">HR / Staffing</option>
+            </optgroup>
+            <optgroup label="Financial Services">
+              <option value="banking">Banking</option>
+              <option value="investment">Investment / Wealth Management</option>
+              <option value="fintech">Fintech</option>
+              <option value="crypto">Cryptocurrency</option>
+            </optgroup>
+            <optgroup label="Technology">
+              <option value="saas">SaaS / Software</option>
+              <option value="it_services">IT Services</option>
+              <option value="cybersecurity">Cybersecurity</option>
+              <option value="ai_ml">AI / Machine Learning</option>
+              <option value="telecom">Telecommunications</option>
+            </optgroup>
+            <optgroup label="Food &amp; Hospitality">
+              <option value="restaurant">Restaurant</option>
+              <option value="hotel">Hotel / Lodging</option>
+              <option value="catering">Catering / Events</option>
+              <option value="food_delivery">Food Delivery</option>
+              <option value="bar_nightlife">Bar / Nightlife</option>
+            </optgroup>
+            <optgroup label="Retail &amp; E-commerce">
+              <option value="retail">Retail</option>
+              <option value="ecommerce">E-commerce</option>
+              <option value="fashion">Fashion / Apparel</option>
+              <option value="grocery">Grocery</option>
+              <option value="luxury">Luxury Goods</option>
+            </optgroup>
+            <optgroup label="Education">
+              <option value="higher_ed">Higher Education</option>
+              <option value="k12">K-12 Education</option>
+              <option value="online_learning">Online Learning</option>
+              <option value="tutoring">Tutoring / Test Prep</option>
+            </optgroup>
+            <optgroup label="Home &amp; Auto Services">
+              <option value="home_services">Home Services / Repair</option>
+              <option value="automotive">Automotive</option>
+              <option value="construction">Construction</option>
+              <option value="cleaning">Cleaning Services</option>
+              <option value="landscaping">Landscaping</option>
+            </optgroup>
+            <optgroup label="Media &amp; Creative">
+              <option value="marketing">Marketing / Advertising</option>
+              <option value="media">Media / Publishing</option>
+              <option value="design">Design / Creative</option>
+              <option value="entertainment">Entertainment</option>
+              <option value="gaming">Gaming</option>
+            </optgroup>
+            <optgroup label="Other">
+              <option value="nonprofit">Nonprofit / NGO</option>
+              <option value="government">Government</option>
+              <option value="manufacturing">Manufacturing</option>
+              <option value="logistics">Logistics / Supply Chain</option>
+              <option value="energy">Energy / Utilities</option>
+              <option value="agriculture">Agriculture</option>
+              <option value="fitness">Fitness / Wellness</option>
+              <option value="travel">Travel / Tourism</option>
+              <option value="other">Other</option>
+            </optgroup>
+          </select>
+          <input type="text" id="cityInput" placeholder="City (optional)">
+        </div>
+      </div>
+    </section>
+
+    <!-- Pitch (loaded from PITCH.md — single source of truth) -->
+    <section class="pitch" id="pitch"></section>
+
+    <!-- Features -->
+    <section class="features" id="features">
+      <div class="features-label">VISIBILITY INTELLIGENCE</div>
+      <h2>Not a snapshot. An intelligent diagnosis.</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <h3>Persona Probing</h3>
+          <p>Test how AI recommends your brand to different demographics — students, retirees, immigrants, professionals. Find which audiences can't see you.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Multi-lingual Analysis</h3>
+          <p>Same question in English, Chinese, Spanish, Hindi — AI gives completely different answers. Discover your brand's language blind spots.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Brand DNA Extraction</h3>
+          <p>Extract exactly how AI describes your brand vs competitors. See your semantic fingerprint — the words AI associates with you.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Drift Detection</h3>
+          <p>Track changes over time with Engram memory. Get alerts when your AI visibility drops — before your competitors notice.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Reality Check</h3>
+          <p>Compare AI recommendations against real-world data. Rated 4.9 stars but AI ignores you? We'll show the gap — and how to close it.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Learning Agent</h3>
+          <p>Every scan makes our agent smarter. Engram memory finds cross-industry patterns and gives increasingly precise optimization advice.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div>Built with Rust · Powered by Engram Memory · <a href="https://github.com/luofang34/FDHackathon" target="_blank">GitHub</a></div>
+    </footer>
+  </div>
+</div>
+
+<!-- ====== LOADING SCREEN ====== -->
+<div id="loadingPage" class="page-section">
+  <div class="loading-container">
+    <div class="loading-brand" id="loadingBrand">Analyzing...</div>
+    
+    <div class="loading-progress-wrapper">
+      <div class="loading-percentage" id="loadingPercentage">0%</div>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="loading-step-info">
+        <span class="loading-step-counter" id="loadingStepCounter"></span>
+        <span class="loading-status" id="loadingStatus">Initializing...</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== REPORT DASHBOARD ====== -->
+<div id="reportPage" class="page-section">
+  <div class="container">
+    <!-- Header -->
+    <div class="report-header">
+      <div class="report-brand-info">
+        <button class="back-btn" onclick="resetToSearch()">← New Analysis</button>
+        <h1 id="reportBrandName">Dr. Smith Cardiology</h1>
+        <p id="reportBrandMeta">Healthcare · New York, NY</p>
+      </div>
+    </div>
+
+    <!-- Tab Navigation (Sticky) -->
+    <div class="tab-nav" id="tabNav">
+      <button class="tab-btn active" data-tab="score">AI Score</button>
+      <button class="tab-btn" data-tab="heatmap">Personas</button>
+      <button class="tab-btn" data-tab="dna">Brand DNA</button>
+      <button class="tab-btn" data-tab="language">Language</button>
+      <button class="tab-btn" data-tab="reality">Reality</button>
+      <button class="tab-btn" data-tab="evidence">Evidence</button>
+      <button class="tab-btn" data-tab="recommendations">Actions</button>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content-wrapper">
+      
+      <!-- TAB 1: AI Visibility Score -->
+      <div class="tab-content active" id="tab-score">
+        <div class="score-hero">
+          <div style="width:500px;max-width:100%;aspect-ratio:1;margin:0 auto 30px;"><canvas id="radarChart"></canvas></div>
+          <div class="score-main">
+            <div class="score-label">AI VISIBILITY SCORE</div>
+            <div class="score-value" id="scoreValue">0</div>
+            <div class="score-status" id="scoreStatus">Analyzing...</div>
+          </div>
+        </div>
+
+        <div class="report-grid">
+          <div class="report-card">
+            <h3>Share of Model</h3>
+            <p class="card-subtitle">How often each AI model recommends you</p>
+            <canvas id="modelShareChart"></canvas>
+          </div>
+
+          <div class="report-card">
+            <h3>Who AI Recommends Instead</h3>
+            <p class="card-subtitle">Top competitors appearing in AI responses</p>
+            <div id="competitorBars"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: Persona Heatmap -->
+      <div class="tab-content" id="tab-heatmap">
+        <div class="tab-header">
+          <h2>Persona Visibility Heatmap</h2>
+          <p>How different demographic personas see your brand across AI models and languages</p>
+        </div>
+        <div class="heatmap-container" id="heatmapContainer">
+          <!-- Heatmap will be generated here -->
+        </div>
+        <div class="heatmap-legend">
+          <div class="legend-item">
+            <div class="legend-color" style="background: rgba(0,230,118,0.15); border: 1px solid #00e676;"></div>
+            <span>Top 3 (Highly Visible)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: rgba(255,171,64,0.15); border: 1px solid #ffab40;"></div>
+            <span>4-6 (Moderately Visible)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: rgba(255,82,82,0.1); border: 1px solid #ff5252;"></div>
+            <span>7+ (Low Visibility)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);"></div>
+            <span>Not Mentioned</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: Brand DNA -->
+      <div class="tab-content" id="tab-dna">
+        <div class="tab-header">
+          <h2>Brand DNA</h2>
+          <p>Keywords and associations AI connects with your brand</p>
+        </div>
+        <div class="dna-container">
+          <div class="dna-viz" id="dnaViz">
+            <!-- Word cloud visualization -->
+          </div>
+          <div class="dna-comparison">
+            <h3>Your DNA vs Competitors</h3>
+            <div id="dnaComparison"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: Language Gap -->
+      <div class="tab-content" id="tab-language">
+        <div class="tab-header">
+          <h2>Language Gap Analysis</h2>
+          <p>Same query, different languages — revealing visibility disparities</p>
+        </div>
+        <div class="language-grid" id="languageGrid">
+          <!-- Language cards will be generated here -->
+        </div>
+      </div>
+
+      <!-- TAB 5: Reality Check -->
+      <div class="tab-content" id="tab-reality">
+        <div class="tab-header">
+          <h2>Reality Check</h2>
+          <p>Comparing AI recommendations against real-world data</p>
+        </div>
+        
+        <div class="bias-score-card">
+          <div class="bias-label">AI BIAS SCORE</div>
+          <div class="bias-value" id="biasScore">0</div>
+          <div class="bias-explanation">
+            Measures the gap between AI recommendations and actual market performance. Higher = more bias.
+          </div>
+        </div>
+
+        <div class="reality-comparison">
+          <div class="reality-column">
+            <h3>What AI Says</h3>
+            <div id="aiRankings"></div>
+          </div>
+          <div class="reality-column">
+            <h3>Real World Data</h3>
+            <div id="realRankings"></div>
+          </div>
+        </div>
+
+        <div class="data-sources">
+          Data from Healthgrades, Zocdoc, Yelp via Tavily
+        </div>
+      </div>
+
+      <!-- TAB 6: Evidence & Sources -->
+      <div class="tab-content" id="tab-evidence">
+        <div class="tab-header">
+          <h2>Evidence & Citations</h2>
+          <p>Raw AI responses and source URLs used in this analysis</p>
+        </div>
+        
+        <div class="evidence-section">
+          <h3>🤖 AI Model Responses</h3>
+          <p class="evidence-subtitle">Sample responses from each AI model probed during analysis</p>
+          <div id="llmEvidenceList" class="evidence-list">
+            <!-- LLM evidence cards will be generated here -->
+          </div>
+        </div>
+        
+        <div class="evidence-section">
+          <h3>🔗 Source URLs (via Tavily)</h3>
+          <p class="evidence-subtitle">Web sources discovered during competitor analysis</p>
+          <div id="tavilySourcesList" class="sources-list">
+            <!-- Tavily sources will be generated here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 7: Recommendations -->
+      <div class="tab-content" id="tab-recommendations">
+        <div class="tab-header">
+          <h2>Actionable Recommendations</h2>
+          <p>Prioritized steps to improve your AI visibility</p>
+        </div>
+        <div class="recommendations-list" id="recommendationsList">
+          <!-- Recommendations will be generated here -->
+        </div>
+      </div>
+
+    </div>
+
+    <footer>
+      <div>Built with Rust · Powered by Engram Memory · <a href="https://github.com/luofang34/FDHackathon" target="_blank">GitHub</a></div>
+    </footer>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

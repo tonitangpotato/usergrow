@@ -1,0 +1,5 @@
+target/
+*.db
+.env
+memory/
+data/

@@ -1,0 +1,63 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  VPS_HOST: 77.42.23.27
+  VPS_USER: root
+  IMAGE_NAME: usergrow
+
+jobs:
+  deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        run: |
+          docker build -t $IMAGE_NAME:latest .
+
+      - name: Save image
+        run: |
+          docker save $IMAGE_NAME:latest | gzip > image.tar.gz
+
+      - name: Copy to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ env.VPS_HOST }}
+          username: ${{ env.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: "image.tar.gz"
+          target: "/tmp"
+
+      - name: Deploy on VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ env.VPS_HOST }}
+          username: ${{ env.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd /tmp
+            docker load < image.tar.gz
+            docker stop usergrow 2>/dev/null || true
+            docker rm usergrow 2>/dev/null || true
+            docker run -d \
+              --name usergrow \
+              --restart unless-stopped \
+              -p 8080:8080 \
+              -e TAVILY_API_KEY=${{ secrets.TAVILY_API_KEY }} \
+              -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
+              -e GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }} \
+              -e PERPLEXITY_API_KEY=${{ secrets.PERPLEXITY_API_KEY }} \
+              usergrow:latest
+            rm -f /tmp/image.tar.gz
+            echo "Deployed! Checking health..."
+            sleep 3
+            curl -sf http://localhost:8080/api/health || echo "Health check pending..."
