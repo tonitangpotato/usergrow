@@ -137,8 +137,14 @@ impl KnowledgeGraph {
         let industry_id = slugify(&format!("industry:{}", report.industry));
         let city_id = slugify(&format!("city:{}", report.city));
 
-        // 1. Upsert core entities
-        self.upsert_entity(&brand_id, "brand", &report.brand, None)?;
+        // 1. Upsert core entities (brand includes visibility score in metadata)
+        let brand_meta = serde_json::json!({
+            "visibility_score": report.visibility_score,
+            "chatgpt_pct": report.share_of_model.chatgpt,
+            "claude_pct": report.share_of_model.claude,
+            "gemini_pct": report.share_of_model.gemini,
+        });
+        self.upsert_entity(&brand_id, "brand", &report.brand, Some(&brand_meta))?;
         self.upsert_entity(&industry_id, "industry", &report.industry, None)?;
         if !report.city.is_empty() {
             self.upsert_entity(&city_id, "city", &report.city, None)?;

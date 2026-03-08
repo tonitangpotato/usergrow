@@ -22,18 +22,92 @@
     <nav>
       <div class="logo"><span>User</span>Grow</div>
       <div class="nav-links">
+        <a href="#knowledgeGraph">Knowledge Graph</a>
+        <a href="#analyzeSection">Analyze</a>
         <a href="#features">Features</a>
-        <a href="/graph.html">Knowledge Graph</a>
-        <a href="https://github.com/luofang34/FDHackathon" target="_blank">GitHub</a>
+        <a href="https://github.com/tonitangpotato/usergrow" target="_blank">GitHub</a>
       </div>
     </nav>
 
-    <!-- Hero -->
-    <section class="hero">
+    <!-- Hero (compact) -->
+    <section class="hero hero-compact">
       <h1>UserGrow</h1>
-      <p class="hero-subtitle">See how AI perceives your brand.<br>Across models. Personas. Languages.</p>
-      
-      <!-- Search Form -->
+      <p class="hero-subtitle">See how AI perceives your brand. Across models. Personas. Languages.</p>
+    </section>
+
+    <!-- ====== KNOWLEDGE GRAPH SECTION (moved to top) ====== -->
+    <section class="kg-section kg-hero" id="knowledgeGraph">
+      <div class="kg-header">
+        <div class="kg-label">KNOWLEDGE GRAPH</div>
+        <h2>The AI Visibility Map</h2>
+        <p class="kg-subtitle">See which brands AI recommends — and which it ignores</p>
+      </div>
+      <div class="kg-intro">
+        <div class="kg-intro-grid">
+          <div class="kg-intro-card">
+            <div class="kg-intro-icon">🎯</div>
+            <h4>Score-Colored Brands</h4>
+            <p>Each brand is colored by its AI Visibility Score (0–20). <span style="color:#ef4444">Red</span> = invisible to AI, <span style="color:#22c55e">Green</span> = highly recommended. Bigger nodes = higher scores.</p>
+          </div>
+          <div class="kg-intro-card">
+            <div class="kg-intro-icon">⚔️</div>
+            <h4>Competition Lines</h4>
+            <p>Lines between brands = AI sees them as competitors. When you ask ChatGPT for a recommendation, these are the brands mentioned together.</p>
+          </div>
+          <div class="kg-intro-card">
+            <div class="kg-intro-icon">🔍</div>
+            <h4>Layer Controls</h4>
+            <p>Toggle <strong>AI Models</strong> to see which models recommend which brands. Toggle <strong>Keywords</strong> to find the search terms brands compete for.</p>
+          </div>
+        </div>
+      </div>
+      <div class="kg-data-stats" id="kgDataStats"></div>
+      <div class="kg-controls">
+        <div class="kg-search-wrap">
+          <input type="text" id="kgSearchInput" placeholder="🔍 Find your brand..." autocomplete="off">
+          <div class="kg-search-results" id="kgSearchResults"></div>
+        </div>
+        <select id="kgIndustryFilter">
+          <option value="all">All Industries</option>
+        </select>
+        <div class="kg-layer-group">
+          <span class="kg-layer-label">Layers:</span>
+          <button class="kg-layer-btn" data-layer="models">🤖 AI Models</button>
+          <button class="kg-layer-btn" data-layer="competition">⚔️ Competition</button>
+          <button class="kg-layer-btn" data-layer="keywords">🔑 Keywords</button>
+        </div>
+        <button onclick="kgResetZoom()" class="kg-btn">Reset</button>
+      </div>
+      <div class="kg-graph-wrapper">
+        <div id="kgContainer">
+          <svg id="kgSvg"></svg>
+        </div>
+        <div class="kg-legend">
+          <div class="kg-legend-item"><span class="kg-dot" style="background:#ef4444"></span> Invisible (0-3)</div>
+          <div class="kg-legend-item"><span class="kg-dot" style="background:#f97316"></span> Low (4-7)</div>
+          <div class="kg-legend-item"><span class="kg-dot" style="background:#eab308"></span> Moderate (8-12)</div>
+          <div class="kg-legend-item"><span class="kg-dot" style="background:#22c55e"></span> Visible (13-16)</div>
+          <div class="kg-legend-item"><span class="kg-dot" style="background:#00e5a0"></span> Dominant (17-20)</div>
+          <div class="kg-legend-sep"></div>
+          <div class="kg-legend-item"><span class="kg-dot" style="background:#a29bfe"></span> Industry</div>
+          <div class="kg-legend-item"><span class="kg-dot" style="background:#ffe66d"></span> AI Model</div>
+        </div>
+        <div class="kg-stats" id="kgStats">
+          <span id="kgStatEntities">0</span> entities · <span id="kgStatRelations">0</span> relations
+        </div>
+      </div>
+      <div class="kg-loading" id="kgLoading">
+        <div class="kg-spinner"></div>
+        <span>Loading Knowledge Graph...</span>
+      </div>
+    </section>
+
+    <!-- Analyze Your Brand -->
+    <section class="analyze-section" id="analyzeSection">
+      <div class="analyze-header">
+        <h2>Analyze Your Brand</h2>
+        <p>Enter your brand to get a full AI visibility report</p>
+      </div>
       <div class="search-form">
         <div class="search-row">
           <input type="text" id="brandInput" placeholder="Search brand or company" required>
@@ -364,6 +438,8 @@
   </div>
 </div>
 
+<div class="kg-tooltip" id="kgTooltip"></div>
 <script src="app.js"></script>
+<script src="kg-embed.js"></script>
 </body>
 </html>

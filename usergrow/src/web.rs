@@ -44,6 +44,8 @@ pub fn router(state: AppState) -> Router {
         .route("/api/kg/entities/{entity_type}", get(kg_entities))
         .route("/api/kg/entity/{entity_id}/relations", get(kg_relations))
         .route("/api/kg/entity/{entity_id}/snapshots", get(kg_snapshots))
+        .route("/api/kg/backfill", post(kg_backfill))
+        .route("/api/reports/list", get(list_reports))
         .fallback_service(ServeDir::new("static"))
         .layer(CorsLayer::permissive())
         .with_state(state)
@@ -172,6 +174,45 @@ async fn kg_snapshots(
         Ok(Ok(snapshots)) => Json(serde_json::json!({"snapshots": snapshots})).into_response(),
         _ => Json(serde_json::json!({"error": "Query failed"})).into_response(),
     }
+}
+
+// ── Backfill & List ────────────────────────────────────────────────────
+
+async fn kg_backfill(
+    State(state): State<AppState>,
+    Json(reports): Json<Vec<FullReport>>,
+) -> impl IntoResponse {
+    let Some(ref kg) = state.kg else {
+        return Json(serde_json::json!({"error": "KG not available"}));
+    };
+    let kg = Arc::clone(kg);
+    let count = reports.len();
+    let result = tokio::task::spawn_blocking(move || {
+        let mut ok = 0u32;
+        let mut fail = 0u32;
+        for r in &reports {
+            match kg.ingest_report(r) {
+                Ok(_) => ok += 1,
+                Err(e) => {
+                    eprintln!("⚠️  KG backfill error for {}: {}", r.brand, e);
+                    fail += 1;
+                }
+            }
+        }
+        (ok, fail)
+    })
+    .await
+    .unwrap_or((0, count as u32));
+    Json(serde_json::json!({
+        "total": count,
+        "ingested": result.0,
+        "failed": result.1
+    }))
+}
+
+async fn list_reports(State(state): State<AppState>) -> Json<Vec<FullReport>> {
+    let reports = state.reports.lock().await;
+    Json(reports.values().cloned().collect())
 }
 
 // ── Analysis Pipeline ──────────────────────────────────────────────────
